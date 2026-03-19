@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { MermaidRenderer } from './components/MermaidRenderer';
-import { Download, FileCode, Image as ImageIcon, Copy, Check } from 'lucide-react';
+import { LegalModal } from './components/LegalModal';
+import { Download, FileCode, Copy, Check } from 'lucide-react';
 
 const INITIAL_CODE = `graph TD
     A[開始] --> B{選択}
@@ -13,6 +14,7 @@ export default function App() {
   const [code, setCode] = useState(INITIAL_CODE);
   const [svgContent, setSvgContent] = useState<string | null>(null);
   const [isCopying, setIsCopying] = useState(false);
+  const [isLegalOpen, setIsLegalOpen] = useState(false);
 
   const handleSvgRendered = useCallback((svg: string) => {
     setSvgContent(svg);
@@ -94,34 +96,46 @@ export default function App() {
     <div className="min-h-screen bg-[#F5F5F4] text-[#1C1917] font-sans">
       {/* ヘッダー */}
       <header className="h-16 border-b border-zinc-200 bg-white flex items-center justify-between px-6 sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white">
-            <FileCode size={20} />
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white">
+              <FileCode size={20} />
+            </div>
+            <h1 className="font-bold text-lg tracking-tight hidden md:block">Mermaid to Image Converter</h1>
           </div>
-          <h1 className="font-bold text-lg tracking-tight">Mermaid to Image Converter</h1>
+          <a
+            href="https://github.com/momerio/mermaid-to-image-converter"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+            title="GitHub で見る"
+          >
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+            <span className="hidden sm:inline">Github</span>
+          </a>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={downloadSvg}
             disabled={!svgContent}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-100 text-zinc-900 hover:bg-zinc-200 border border-zinc-200 rounded-lg transition-all cursor-pointer shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <ImageIcon size={16} />
-            <span>SVG</span>
+            <Download size={16} className="text-orange-600" />
+            <span>Export SVG</span>
           </button>
           <button
             onClick={downloadPng}
             disabled={!svgContent}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg transition-colors shadow-sm cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-zinc-900 text-white hover:bg-zinc-800 rounded-lg transition-all shadow-md cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Download size={16} />
-            <span>PNG</span>
+            <span>Export PNG</span>
           </button>
         </div>
       </header>
 
-      <main className="flex h-[calc(100vh-64px)] overflow-hidden">
+      <main className="flex h-[calc(100vh-64px-32px)] overflow-hidden">
         {/* エディタペイン */}
         <div className="w-1/2 border-r border-zinc-200 bg-white flex flex-col">
           <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-100 bg-zinc-50/50">
@@ -149,6 +163,21 @@ export default function App() {
           <MermaidRenderer code={code} onSvgRendered={handleSvgRendered} />
         </div>
       </main>
+
+      {/* フッター */}
+      <footer className="h-8 bg-zinc-50 border-t border-zinc-200 flex items-center justify-center gap-3 text-[10px] text-zinc-400 font-medium tracking-tight">
+        <span>&copy; {new Date().getFullYear()} momerio</span>
+        <span className="text-zinc-300">|</span>
+        <button
+          onClick={() => setIsLegalOpen(true)}
+          className="hover:text-zinc-600 transition-colors cursor-pointer underline underline-offset-2"
+        >
+          プライバシーポリシー・免責事項
+        </button>
+      </footer>
+
+      {/* 法的情報モーダル */}
+      <LegalModal isOpen={isLegalOpen} onClose={() => setIsLegalOpen(false)} />
     </div>
   );
 }
