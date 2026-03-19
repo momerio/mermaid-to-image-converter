@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  /* Google Fonts を除去し、プライバシー配慮・外部依存なしのシステムフォントを使用 */
+  --font-sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "Yu Gothic", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+}
+
+.mermaid-container svg {
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "Yu Gothic", sans-serif !important;
+  overflow: visible !important;
+}
